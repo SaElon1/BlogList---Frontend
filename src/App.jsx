@@ -34,6 +34,7 @@ const App = () => {
           <div>
             <h2>Log in to application</h2>
             <form onSubmit={handleLogin}>
+              <div>
               username
               <input
               type = "text"
@@ -41,6 +42,8 @@ const App = () => {
               name = "Username"
               onChange={({target}) => setUsername(target.value)}
               />
+              </div>
+              <div>
               password
               <input
               type="password"
@@ -48,6 +51,7 @@ const App = () => {
               name="Password"
               onChange={({ target }) => setPassword(target.value)}
                />
+               </div>
                <button type = "submit">Login</button>
             </form>
           </div>
@@ -57,6 +61,7 @@ const App = () => {
       return (
         <div>
           <h2>blogs</h2>
+          <p>{user.name} logged in</p>
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
           )}
