@@ -2,16 +2,25 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogFrom'
+import LogoutButton from './components/LogoutButton'
+import BlogList from './components/BlogList'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState([])
-  const [password, setPassword] = useState([])
   const [user, setUser] = useState(null)
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
+    if (loggedUserJSON){
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  },[])
 
+  const handleLogin = async (username, password) => {
     try {
       const user = await loginService.login({
         username, password
@@ -22,8 +31,6 @@ const App = () => {
 
       blogService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
     } catch (exception) {
       setErrorMessage('wrong credentials')
       setTimeout(() => {
@@ -32,53 +39,20 @@ const App = () => {
     }
   }
 
-  const handleLogOut = (event) => {
-    event.preventDefault()
+  const handleLogOut = () => {
     window.localStorage.removeItem('loggedBloglistUser')
     setUser(null)
   }
 
-    const loginForm = () => {
-      if (user === null) {
-        return (
-          <div>
-            <h2>Log in to application</h2>
-            <form onSubmit={handleLogin}>
-              <div>
-              username
-              <input
-              type = "text"
-              value = {username}
-              name = "Username"
-              onChange={({target}) => setUsername(target.value)}
-              />
-              </div>
-              <div>
-              password
-              <input
-              type="password"
-              value={password}
-              name="Password"
-              onChange={({ target }) => setPassword(target.value)}
-               />
-               </div>
-               <button type = "submit">Login</button>
-            </form>
-          </div>
-
-        )
-      }
-      return (
-        <div>
-          <h2>blogs</h2>
-          <p>{user.name} logged in
-          <button onClick={handleLogOut}>Logout</button>
-          </p>
-          {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
-          )}
-        </div>
-      )
+    const addBlog = async ( newBlog ) => {
+      await blogService
+      .create(newBlog)
+      .then(returnedBlog => {
+        setBlogs(blogs.concat(returnedBlog))
+        setNewTitle("")
+        setNewAuthor("")
+        setNewUrl("")
+      })
     }
 
   useEffect(() => {
@@ -89,7 +63,14 @@ const App = () => {
 
   return (
     <div>
-     {loginForm()}
+     {!user && <LoginForm handleLogin={handleLogin}/>}
+     {user && (
+      <>
+      <LogoutButton handleLogout={handleLogOut} userName={user.name}/>
+      <BlogForm addBlog={addBlog}/>
+      <BlogList blogs={blogs}/>
+      </>
+     )}
     </div>
   )
 }
