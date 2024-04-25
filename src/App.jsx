@@ -6,10 +6,12 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogFrom'
 import LogoutButton from './components/LogoutButton'
 import BlogList from './components/BlogList'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
+  const [notificationMessage, setNotificationMessage] = useState(null)
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
@@ -32,10 +34,10 @@ const App = () => {
       blogService.setToken(user.token)
       setUser(user)
     } catch (exception) {
-      setErrorMessage('wrong credentials')
+      setNotificationMessage('wrong username or password')
       setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+        setNotificationMessage(null)
+      }, 4000)
     }
   }
 
@@ -45,14 +47,17 @@ const App = () => {
   }
 
     const addBlog = async ( newBlog ) => {
-      await blogService
-      .create(newBlog)
-      .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        setNewTitle("")
-        setNewAuthor("")
-        setNewUrl("")
-      })
+      try {
+      const returnedBlog = await blogService.create(newBlog)
+      setBlogs(blogs.concat(returnedBlog))
+      setNotificationMessage(`a new blog ${newBlog.title} by ${newBlog.author} added`)
+      setTimeout(() => {
+        setNotificationMessage(null)
+      }, 4000)
+    }catch (error){
+      console.error(error)
+      setNotificationMessage("information missing or error in adding the blog")
+    }
     }
 
   useEffect(() => {
@@ -63,10 +68,15 @@ const App = () => {
 
   return (
     <div>
-     {!user && <LoginForm handleLogin={handleLogin}/>}
+     {!user && 
+     <>
+     <Notification message ={notificationMessage} type='error'/>
+     <LoginForm handleLogin={handleLogin}/>
+     </>}
      {user && (
       <>
       <LogoutButton handleLogout={handleLogOut} userName={user.name}/>
+      <Notification message = {notificationMessage} type='success'/>
       <BlogForm addBlog={addBlog}/>
       <BlogList blogs={blogs}/>
       </>

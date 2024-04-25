@@ -5,6 +5,7 @@ const BlogForm = ( {addBlog} ) => {
     const [newUrl, setNewUrl] = useState([])
     const [newAuthor, setNewAuthor] = useState([])
 
+
     const handleSubmit = (event) => {
         event.preventDefault()
 
