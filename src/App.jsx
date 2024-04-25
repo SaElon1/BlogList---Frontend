@@ -12,6 +12,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [notificationMessage, setNotificationMessage] = useState(null)
+  const [notificationType, setNotificationType] = useState(null)
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
@@ -35,6 +36,7 @@ const App = () => {
       setUser(user)
     } catch (exception) {
       setNotificationMessage('wrong username or password')
+      setNotificationType('error')
       setTimeout(() => {
         setNotificationMessage(null)
       }, 4000)
@@ -51,12 +53,17 @@ const App = () => {
       const returnedBlog = await blogService.create(newBlog)
       setBlogs(blogs.concat(returnedBlog))
       setNotificationMessage(`a new blog ${newBlog.title} by ${newBlog.author} added`)
+      setNotificationType('success')
       setTimeout(() => {
         setNotificationMessage(null)
       }, 4000)
     }catch (error){
       console.error(error)
       setNotificationMessage("information missing or error in adding the blog")
+      setNotificationType('error')
+      setTimeout(() => {
+        setNotificationMessage(null)
+      }, 4000)
     }
     }
 
@@ -70,13 +77,13 @@ const App = () => {
     <div>
      {!user && 
      <>
-     <Notification message ={notificationMessage} type='error'/>
+     <Notification message ={notificationMessage} type={notificationType}/>
      <LoginForm handleLogin={handleLogin}/>
      </>}
      {user && (
       <>
       <LogoutButton handleLogout={handleLogOut} userName={user.name}/>
-      <Notification message = {notificationMessage} type='success'/>
+      <Notification message = {notificationMessage} type={notificationType}/>
       <BlogForm addBlog={addBlog}/>
       <BlogList blogs={blogs}/>
       </>
