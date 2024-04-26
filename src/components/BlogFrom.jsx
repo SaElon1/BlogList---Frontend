@@ -1,15 +1,14 @@
 import React, {useState} from 'react'
 
-const BlogForm = ( {addBlog} ) => {
+const BlogForm = ( {createBlog} ) => {
     const [newTitle, setNewTitle] = useState([])
     const [newUrl, setNewUrl] = useState([])
     const [newAuthor, setNewAuthor] = useState([])
 
 
-    const handleSubmit = (event) => {
+    const addBlog = (event) => {
         event.preventDefault()
-
-        addBlog({
+        createBlog({
             title: newTitle,
             author: newAuthor,
             url: newUrl
@@ -23,7 +22,7 @@ const BlogForm = ( {addBlog} ) => {
       <div>
         <h2>create a new blog</h2>
         <div>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={addBlog}>
             <div>
             title
             <input

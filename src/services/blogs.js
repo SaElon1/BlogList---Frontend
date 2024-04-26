@@ -20,4 +20,14 @@ const create = async newObject => {
   return response.data
 }
 
-export default { getAll, setToken, create }
+const updateLikes = async (id, updatedObject) => {
+  const config = {
+    headers: {Authorization: token}
+  }
+  const response = await axios.put(`${baseUrl}/${id}`, updatedObject, config)
+  return response.data
+}
+
+
+
+export default { getAll, setToken, create, updateLikes }

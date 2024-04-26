@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -14,6 +14,8 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [notificationMessage, setNotificationMessage] = useState(null)
   const [notificationType, setNotificationType] = useState(null)
+  const blogFromRef = useRef()
+
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
@@ -51,6 +53,7 @@ const App = () => {
 
     const addBlog = async ( newBlog ) => {
       try {
+      blogFromRef.current.toggleVisibility()
       const returnedBlog = await blogService.create(newBlog)
       setBlogs(blogs.concat(returnedBlog))
       setNotificationMessage(`a new blog ${newBlog.title} by ${newBlog.author} added`)
@@ -66,6 +69,16 @@ const App = () => {
         setNotificationMessage(null)
       }, 4000)
     }
+    }
+
+    const addLikes = async (id, updatedBlog) => {
+      try{
+        const returnedBlog = await blogService.updateLikes(id, updatedBlog)
+        setBlogs(blogs.map(blog => (blog.id === id ? returnedBlog : blog)))
+      }catch(error){
+        console.error('Error updating likes:', error)
+  
+      }
     }
 
   useEffect(() => {
@@ -85,10 +98,10 @@ const App = () => {
       <>
       <LogoutButton handleLogout={handleLogOut} userName={user.name}/>
       <Notification message = {notificationMessage} type={notificationType}/>
-      <Togglable buttonLabel = "new blog">
-      <BlogForm addBlog={addBlog}/>
+      <Togglable buttonLabel = "new blog" ref={blogFromRef}>
+      <BlogForm createBlog={addBlog}/>
       </Togglable>
-      <BlogList blogs={blogs}/>
+      <BlogList blogs={blogs} addLikes={addLikes}/>
       </>
      )}
     </div>
