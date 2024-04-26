@@ -7,6 +7,7 @@ import BlogForm from './components/BlogFrom'
 import LogoutButton from './components/LogoutButton'
 import BlogList from './components/BlogList'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -84,7 +85,9 @@ const App = () => {
       <>
       <LogoutButton handleLogout={handleLogOut} userName={user.name}/>
       <Notification message = {notificationMessage} type={notificationType}/>
+      <Togglable buttonLabel = "new blog">
       <BlogForm addBlog={addBlog}/>
+      </Togglable>
       <BlogList blogs={blogs}/>
       </>
      )}
