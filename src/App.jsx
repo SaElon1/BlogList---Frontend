@@ -81,6 +81,15 @@ const App = () => {
       }
     }
 
+    const removeBlog = async (id, removedBlog) => {
+      try{
+        const returnedBlog = await blogService.remove(id, removedBlog)
+        setBlogs(blogs.filter(blog => blog.id !== returnedBlog.id))
+      }catch(error){
+        console.error('Error removing blog:', error)
+      }
+    }
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
@@ -101,7 +110,7 @@ const App = () => {
       <Togglable buttonLabel = "new blog" ref={blogFromRef}>
       <BlogForm createBlog={addBlog}/>
       </Togglable>
-      <BlogList blogs={blogs} addLikes={addLikes}/>
+      <BlogList blogs={blogs} addLikes={addLikes} removeBlog={removeBlog}/>
       </>
      )}
     </div>
