@@ -83,8 +83,8 @@ const App = () => {
 
     const removeBlog = async (id, removedBlog) => {
       try{
-        const returnedBlog = await blogService.remove(id, removedBlog)
-        setBlogs(blogs.filter(blog => blog.id !== returnedBlog.id))
+        await blogService.remove(id, removedBlog)
+        setBlogs(blogs.filter(blog => blog.id !== removedBlog.id))
       }catch(error){
         console.error('Error removing blog:', error)
       }

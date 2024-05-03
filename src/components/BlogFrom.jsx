@@ -1,11 +1,14 @@
 import React, {useState} from 'react'
+import PropTypes from 'prop-types'
 
 const BlogForm = ( {createBlog} ) => {
     const [newTitle, setNewTitle] = useState([])
     const [newUrl, setNewUrl] = useState([])
     const [newAuthor, setNewAuthor] = useState([])
 
-
+    BlogForm.propTypes = {
+      createBlog: PropTypes.func.isRequired
+    }
     const addBlog = (event) => {
         event.preventDefault()
         createBlog({
@@ -19,7 +22,7 @@ const BlogForm = ( {createBlog} ) => {
     }
 
     return (
-      <div>
+      <div className='blogDiv'>
         <h2>create a new blog</h2>
         <div>
           <form onSubmit={addBlog}>
@@ -30,6 +33,7 @@ const BlogForm = ( {createBlog} ) => {
             value = {newTitle}
             name = "Title"
             onChange = {({target}) => setNewTitle(target.value)}
+            id ='title-input'
             />
             <div>
               author
@@ -38,6 +42,7 @@ const BlogForm = ( {createBlog} ) => {
               value = {newAuthor}
               name = "Author"
               onChange = {({target}) => setNewAuthor(target.value)}
+              id='author-input'
               />
             </div>
             <div>
@@ -47,6 +52,7 @@ const BlogForm = ( {createBlog} ) => {
               value = {newUrl}
               name = "Url"
               onChange={({target}) => setNewUrl(target.value)}
+              id = 'url-input'
               />
             </div>
             <button type = "submit">create</button>
