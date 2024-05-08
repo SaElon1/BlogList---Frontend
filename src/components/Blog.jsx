@@ -1,9 +1,16 @@
 import PropTypes from 'prop-types'
+import { useEffect, useState } from 'react'
 
 const Blog = ({ blog, addLikes, removeBlog}) => {
+  const [loggedUsername, setLoggedUsername] = useState(null)
+
+  useEffect(() => {
   const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
   const loggedUser = JSON.parse(loggedUserJSON)
-  const loggedUsername = loggedUser ? loggedUser.username : null
+  if (loggedUser){
+  setLoggedUsername(loggedUser.username)
+  }
+  }, [])
 
   Blog.propTypes = {
     blog: PropTypes.object.isRequired,
@@ -27,18 +34,19 @@ const Blog = ({ blog, addLikes, removeBlog}) => {
   <div>
     <ul className='blog'>
     {blog.title} by {blog.author}
+    <p>{blog.url}</p>
     <p>likes: {blog.likes}
     <button onClick={handleLike}>like</button>
     </p>
     </ul>
-    <div>
+    <ul>
     <p>
-      {blog.user.name}
+      added by {blog.user.name}
+      </p>
       {loggedUsername === blog.user.username && (
         <button onClick={handleRemoveBlog}>remove</button>
       )}
-    </p>
-    </div>
+    </ul>
   </div> 
   )
   }

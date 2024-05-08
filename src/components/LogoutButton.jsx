@@ -1,9 +1,9 @@
 import React from 'react'
 
-const LogoutButton = ({ handleLogout, userName }) => {
+const LogoutButton = ({ handleLogout, username }) => {
   return (
       <div>
-          <p>{userName} logged in
+          <p>{username} logged in
           <button onClick={handleLogout}>Logout</button>
           </p>
       </div>

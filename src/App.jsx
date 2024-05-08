@@ -34,7 +34,6 @@ const App = () => {
       window.localStorage.setItem(
         'loggedBloglistUser', JSON.stringify(user)
       )
-
       blogService.setToken(user.token)
       setUser(user)
     } catch (exception) {
@@ -105,7 +104,7 @@ const App = () => {
      </>}
      {user && (
       <>
-      <LogoutButton handleLogout={handleLogOut} userName={user.name}/>
+      <LogoutButton handleLogout={handleLogOut} username={user.name}/>
       <Notification message = {notificationMessage} type={notificationType}/>
       <Togglable buttonLabel = "new blog" ref={blogFromRef}>
       <BlogForm createBlog={addBlog}/>
